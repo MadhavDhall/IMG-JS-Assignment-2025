@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guessing Game</title>
+    <link href="./style/output.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center mb-6 text-blue-600">Number Guessing Game</h1>
+        <div class="mb-4 text-center">
+            <p class="text-gray-700">Guess a number between <span class="font-bold">1</span> and <span
+                    class="font-bold">100</span></p>
+        </div>
+        <form id="guessForm" class="flex flex-col items-center gap-2 mb-4 justify-center">
+            <input type="number" id="guessInput"
+                class="border rounded px-3 py-2 text-center text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+                placeholder="Your guess" min="1" max="100" required>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                Guess
+            </button>
+        </form>
+        <div class="mb-4 text-center">
+            <p class="text-gray-700">Attempts: <span id="attempts" class="font-bold">0</span></p>
+            <p id="previousGuesses" class="text-gray-600 text-sm"></p>
+        </div>
+        <div id="message" class="text-center text-lg font-semibold mt-4"></div>
+        <button id="restartBtn"
+            class="hidden mt-6 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition">
+            Restart Game
+        </button>
+    </div>
+
+    <script src="./index.js"></script>
+</body>
+
+</html>
