@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhall AI</title>
+    <link rel="stylesheet" href="./styles/output.css">
+    <script>
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 h-screen w-screen flex items-center justify-center">
+    <div class="w-full h-full flex relative">
+        <!-- Sidebar (hidden on small screens, toggled with button) -->
+        <aside id="sidebar"
+            class="fixed z-30 inset-y-0 left-0 w-64 bg-white border-r flex flex-col transform -translate-x-full transition-transform duration-200 ease-in-out md:relative md:translate-x-0 md:flex md:w-64">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-blue-600">Dhall AI</h1>
+                <button class="md:hidden text-gray-500 hover:text-blue-600" onclick="toggleSidebar()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto overflow-x-hidden">
+                <div class="p-4">
+                    <button class="w-full bg-blue-500 text-white py-2 rounded-lg mb-4 hover:bg-blue-600 transition"
+                        onclick="createNewChat()">+ New Chat</button>
+                    <!-- Model Selector in Sidebar -->
+                    <div class="mb-4">
+                        <label for="model-selector" class="block text-gray-600 font-medium mb-1">Model:</label>
+                        <select
+                            class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            id="model-selector">
+                        </select>
+                    </div>
+                    <h2 class="text-gray-500 text-xs uppercase mb-2">Chats</h2>
+                    <ul class="space-y-2" id="chat-list">
+                        <!-- here will be dynamically generated chat items -->
+                    </ul>
+                </div>
+            </div>
+            <div class="p-4 border-t">
+                <div class="flex items-center space-x-2">
+                    <form id="api-key-form" class="flex flex-col items-center space-y-2 w-full">
+                        <input type="password" id="api-key-input" placeholder="OpenRouter API Key"
+                            class="flex-1 border rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                        <button type="submit"
+                            class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-blue-600 transition">Save
+                            API Key</button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Overlay for sidebar on mobile -->
+        <div id="sidebar-overlay" onclick="toggleSidebar()"
+            class="fixed inset-0 bg-black opacity-75 z-10 hidden md:hidden">
+        </div>
+
+        <!-- Main Chat Area -->
+        <main class="flex-1 flex flex-col h-full md:ml-0">
+            <!-- Top bar with menu button on mobile -->
+            <div class="flex items-center justify-between px-4 py-3 border-b bg-white md:hidden">
+                <button class="text-gray-500 hover:text-blue-600" onclick="toggleSidebar()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <h2 class="text-lg font-semibold text-gray-800" id="chat-title">Dhall AI Chat</h2>
+                <div></div>
+            </div>
+            <!-- Model Selector (hidden on mobile top bar, shown on desktop) -->
+            <div class="hidden md:flex items-center justify-between px-8 py-4 border-b bg-white">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-800" id="chat-title2">Dhall AI Chat</h2>
+                </div>
+            </div>
+            <!-- Chat Messages -->
+            <div class="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-4 bg-gray-50" id="chat-messages">
+                <!-- Example messages -->
+                <div class="flex">
+                    <div class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-xl">
+                        Hi! How can I help you today?
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <div class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg max-w-xl">
+                        Can you suggest some project ideas?
+                    </div>
+                </div>
+                <!-- More messages will go here -->
+            </div>
+            <!-- Chat Input -->
+            <form class="px-4 md:px-8 py-4 bg-white border-t flex items-center space-x-4" id="send-message-form">
+                <input type="text" placeholder="Type your message..."
+                    class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
+                    id="send-message-button">Send</button>
+            </form>
+        </main>
+    </div>
+    <script>
+        // Sidebar toggle logic for overlay
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+    </script>
+    <script src="./scripts/index.js" defer></script>
+    <script src="./scripts/models.js"></script>
+</body>
+
+</html>
