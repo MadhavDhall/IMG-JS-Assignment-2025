@@ -25,7 +25,7 @@ guessForm.addEventListener("submit", (event) => {
     }
 
     if (guess === number) {
-        resultMessage.textContent = "Congratulations! You've guessed the number!";
+        resultMessage.textContent = "Congratulations! You've guessed the number! " + number + ".";
     } else if (guess < number) {
         resultMessage.textContent = "Too low! Try again.";
     } else {
