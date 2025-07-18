@@ -1,9 +1,12 @@
+let numberOfItems = 10; // Default number of items to load
+let category = null; // Default category
+
 document.addEventListener('DOMContentLoaded', function () {
     loadCategories()
 
     const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get('category');
-    loadItems(category);
+    category = urlParams.get('category');
+    loadItems(category, numberOfItems);
 })
 
 const loadCategories = async () => {
@@ -25,10 +28,20 @@ const loadCategories = async () => {
     }
 }
 
-const loadItems = async (category) => {
+// get the number of items to load from the select bar
+const itemCountSelect = document.getElementById('item-count');
+console.log(itemCountSelect.value);
+
+itemCountSelect.addEventListener('change', (event) => {
+    numberOfItems = event.target.value === 'all' ? null : parseInt(event.target.value, 10);
+    loadItems(category, numberOfItems);
+});
+
+const loadItems = async (category, number = 10) => {
     try {
         const response = category ? await fetch(`http://43.205.110.71:8000/categories/${category}/items`) : await fetch('http://43.205.110.71:8000/items');
-        const data = await response.json();
+        const dataAll = await response.json();
+        const data = number ? dataAll.slice(0, number) : dataAll; // Limit the number of items based on the select value
         const itemList = document.getElementById('item-list');
         itemList.innerHTML = ''; // Clear existing items
         data.forEach(item => {

@@ -9,8 +9,16 @@
     <link rel="stylesheet" href="./style/output.css">
 </head>
 
-<body>
-    <canvas id="canvas" width="400" height="400"></canvas>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen flex-col">
+    <div id="time-left" class="text-lg text-center">Time left: <span id="time-left-value"></span>
+        seconds
+    </div>
+    <button id="start-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+        Start Game
+    </button>
+
+    <div id="light" class="mt-4 text-lg"></div>
+    <canvas id="canvas" class="h-100 w-3xl"></canvas>
     <script src="./script.js"></script>
 </body>
 
