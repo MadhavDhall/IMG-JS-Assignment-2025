@@ -44,6 +44,19 @@ document.getElementById("model-selector").addEventListener("change", (event) => 
     model = selectedModel;
 });
 
+// Function to parse markdown text to HTML
+// This function will convert markdown syntax to HTML tags for rendering in the chat messages
+// It supports h1, h2, h3 tags, bold text, and italic text
+const markdownParser = (text) => {
+    const toHTML = text
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')  // h3 tag
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')   // h2 tag
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')    // h1 tag
+        .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')  // bold
+        .replace(/\*(.+?)\*/g, '<i>$1</i>');     // italic
+    return toHTML.trim();
+};
+
 // Function to create the IndexedDB database if not exists
 const createDB = () => {
     const request = indexedDB.open("Dhall AI", 1);
@@ -143,32 +156,16 @@ const scrollToBottom = () => {
 
 // Function to open a chat
 const openChat = (chatId) => {
-    // Cancel any ongoing fetch request before opening a new chat
-    // cancelFetchRequest();
-    //remove highlight from all chats
-    // const allChats = document.querySelectorAll("#chat-list li");
-    // allChats.forEach(chat => {
-    //     chat.classList.remove("bg-blue-100"); // Remove highlight from all chats
-    // });
-    // Highlight the selected chat
-    console.log("openchat");
-
-    console.log(typeof chatId);
-
-
     const dbRequest = createDB();
     dbRequest.onsuccess = function () {
         const db = dbRequest.result;
         const transaction = db.transaction("chats", "readonly");
         const store = transaction.objectStore("chats");
         const getRequest = store.get(chatId);
-        console.log(getRequest);
 
         getRequest.onsuccess = function () {
-            console.log(getRequest);
 
             const chat = getRequest.result;
-            console.log(chat);
 
             if (chat) {
                 // Here you can implement the logic to display the chat messages
@@ -212,7 +209,12 @@ const loadChatMessages = (chat) => {
         innerDiv.className = message.role === "user"
             ? "bg-gray-200 text-gray-800 px-4 py-2 rounded-lg max-w-sm lg:max-w-2xl"
             : "bg-blue-500 text-white px-4 py-2 rounded-lg max-w-sm lg:max-w-2xl";
-        innerDiv.textContent = message.content; // Set as plain text, not HTML
+        innerDiv.style.whiteSpace = "pre-wrap"; // Preserve whitespace and line breaks
+        //remove the content between ◁think▷ and ◁/think▷
+        message.content = message.content.replace(/◁think▷[\s\S]*?◁\/think▷/g, "");
+
+        // Convert markdown to HTML
+        innerDiv.innerHTML = markdownParser(message.content); // Use markdownParser to convert to HTML
         messageDiv.appendChild(innerDiv);
         chatMessages.appendChild(messageDiv);
     });
@@ -237,8 +239,6 @@ const storeMessage = (chatId, message) => {
                     chat.messages.push(message);
                     const updateRequest = store.put(chat);
                     updateRequest.onsuccess = function () {
-                        console.log(`Message pushed to chat with ID ${chatId}.`);
-                        console.log(chat);
                         resolve(chat); // Resolve with the updated chat object
                     }
                     updateRequest.onerror = function (event) {
@@ -280,13 +280,11 @@ const sendMessage = async (event, chatId) => {
     if (messageContent) {
         try {
             const chat = await storeMessage(chatId, { role: "user", content: messageContent });
-            console.log(chat);
 
             // now send the message to the AI model and show loading till response is not generated
             const loadingMessage = { role: "assistant", content: "Loading..." };
             chat.messages.push(loadingMessage);
             loadChatMessages(chat);
-            console.log(apiKey);
 
             const url = 'https://openrouter.ai/api/v1/chat/completions';
             const options = {
@@ -332,7 +330,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const defaultChatId = chatIds.length > 0 ? chatIds[chatIds.length - 1] : createNewChat(); // Default to the first chat if available else create a new chat
 
             if (chatId && chatIds.includes(Number(chatId))) {
-                console.log(`Chat ID from URL: ${chatId}`);
                 openChat(Number(chatId)); // Open the chat with the specified IDt
             } else {
                 window.location.href = `?id=${defaultChatId}`; // Redirect to a default chat
